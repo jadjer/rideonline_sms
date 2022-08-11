@@ -12,9 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-from app import getMessage
+from pydantic import BaseConfig, BaseModel
 
 
-if __name__ == '__main__':
-    asyncio.run(getMessage())
+class RWModel(BaseModel):
+    class Config(BaseConfig):
+        orm_mode = True
+        allow_population_by_field_name = True

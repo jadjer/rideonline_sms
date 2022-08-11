@@ -12,9 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-from app import getMessage
+from app.models.domain.rwmodel import RWModel
 
 
-if __name__ == '__main__':
-    asyncio.run(getMessage())
+class RWSchema(RWModel):
+    class Config(RWModel.Config):
+        orm_mode = True

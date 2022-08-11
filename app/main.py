@@ -12,9 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-from app import getMessage
+from kafka import KafkaConsumer
 
 
-if __name__ == '__main__':
-    asyncio.run(getMessage())
+consumer = KafkaConsumer("sms")
+
+
+async def getMessage():
+    while True:
+        for message in consumer:
+            print(message)
