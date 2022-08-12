@@ -13,8 +13,8 @@
 #  limitations under the License.
 
 import asyncio
-from app import getMessage
+from app import run
 
 
 if __name__ == '__main__':
-    asyncio.run(getMessage())
+    asyncio.run(run())

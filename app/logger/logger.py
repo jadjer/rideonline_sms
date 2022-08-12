@@ -12,15 +12,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-
-from app.consumers.get_message import get_message
-from app.sms_manager import sms_handler
+from loguru import logger
 
 
-async def run():
-    queue = asyncio.Queue()
-    await asyncio.gather(
-        sms_handler(queue),
-        get_message(queue),
-    )
+async def log_info(message):
+    logger.info(message)
+
+
+async def log_warning(message):
+    logger.warning(message)
+
+
+async def log_error(message):
+    logger.error(message)
+
+
+async def log_critical(message):
+    logger.critical(message)

@@ -1,2 +1,6 @@
-kafka-python
+aiokafka
 pydantic
+xmltodict
+httpx
+phonenumbers
+loguru

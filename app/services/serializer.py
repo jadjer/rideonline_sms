@@ -12,15 +12,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-
-from app.consumers.get_message import get_message
-from app.sms_manager import sms_handler
+import json
+from app.logger import log_error
 
 
-async def run():
-    queue = asyncio.Queue()
-    await asyncio.gather(
-        sms_handler(queue),
-        get_message(queue),
-    )
+async def serialize(message: str) -> bytes:
+    return json.dumps(message).encode('ascii')
+
+
+async def deserialize(encoded_message: bytes) -> str:
+    try:
+        return json.loads(encoded_message.decode('ascii'))
+
+    except json.JSONDecodeError as exception:
+        await log_error(exception)

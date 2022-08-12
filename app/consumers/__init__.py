@@ -11,16 +11,3 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
-import asyncio
-
-from app.consumers.get_message import get_message
-from app.sms_manager import sms_handler
-
-
-async def run():
-    queue = asyncio.Queue()
-    await asyncio.gather(
-        sms_handler(queue),
-        get_message(queue),
-    )

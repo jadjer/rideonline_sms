@@ -19,7 +19,6 @@ import xmltodict as xmltodict
 from httpx import AsyncClient
 from datetime import datetime
 
-from fastapi import status
 from pydantic import HttpUrl
 
 MAX_CHARS_IN_MESSAGE = 160
@@ -52,7 +51,7 @@ async def is_hilink(device_host: HttpUrl) -> bool:
     async with AsyncClient(base_url=device_host) as client:
         response = await client.get("/api/device/information", timeout=2.0)
 
-    if response.status_code != status.HTTP_200_OK:
+    if response.status_code != 200:
         return False
 
     return True
@@ -65,7 +64,7 @@ async def get_headers(device_host: HttpUrl) -> dict:
     async with AsyncClient(base_url=device_host) as client:
         response = await client.get("/api/webserver/SesTokInfo")
 
-    if response.status_code != status.HTTP_200_OK:
+    if response.status_code != 200:
         return {'__RequestVerificationToken': token, 'Cookie': session_id}
 
     with contextlib.suppress(Exception):
@@ -165,7 +164,7 @@ async def send_sms_to_phone(device_host: HttpUrl, phone: str, message: str) -> b
 
     async with AsyncClient(base_url=device_host) as client:
         response_send = await client.post("/api/sms/send-sms", data=payload)
-        if response_send.status_code != status.HTTP_200_OK:
+        if response_send.status_code != 200:
             return False
 
     return True
