@@ -21,19 +21,19 @@ from phonenumbers import (
 from app.logger import log_warning
 
 
-def check_phone_is_valid(phone_number: str) -> bool:
+async def check_phone_is_valid(phone_number: str) -> bool:
     try:
         phone = parse(phone_number, None)
     except NumberParseException:
-        log_warning(f"Phone number {phone_number} parser error")
+        await log_warning(f"Phone number {phone_number} parser error")
         return False
 
     if not is_possible_number(phone):
-        log_warning(f"Phone number {phone_number} is impossible number")
+        await log_warning(f"Phone number {phone_number} is impossible number")
         return False
 
     if not is_valid_number(phone):
-        log_warning(f"Phone number {phone_number} is invalid number")
+        await log_warning(f"Phone number {phone_number} is invalid number")
         return False
 
     return True

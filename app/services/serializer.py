@@ -13,16 +13,11 @@
 #  limitations under the License.
 
 import json
-from app.logger import log_error
 
 
-async def serialize(message: str) -> bytes:
+def serialize(message: str) -> bytes:
     return json.dumps(message).encode('ascii')
 
 
-async def deserialize(encoded_message: bytes) -> str:
-    try:
-        return json.loads(encoded_message.decode('ascii'))
-
-    except json.JSONDecodeError as exception:
-        await log_error(exception)
+def deserialize(encoded_message: bytes) -> str:
+    return json.loads(encoded_message.decode('ascii'))

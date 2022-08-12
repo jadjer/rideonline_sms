@@ -14,10 +14,10 @@
 
 import asyncio
 
-from app.logger import log_critical
 from app.logger import log_info
-from app.models.domain.command import Command
+from app.models.command import Command
 from app.services.sms import send_sms_to_phone
+from app.services.validator import check_phone_is_valid
 
 
 async def sms_handler(queue: asyncio.Queue):
@@ -27,8 +27,7 @@ async def sms_handler(queue: asyncio.Queue):
 
         await log_info("Get new message from queue")
 
-        is_sent = await send_sms_to_phone("http://192.168.1.1", message.phone, message.message)
-        if not is_sent:
-            await log_critical("Sms has not sent")
+        if await check_phone_is_valid(message.phone):
+            await send_sms_to_phone("http://192.168.1.1", message.phone, message.message)
 
         queue.task_done()

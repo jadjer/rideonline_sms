@@ -12,30 +12,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import enum
-from loguru import logger
+from aiokafka import AIOKafkaProducer
 
-from kafka import KafkaProducer
-from kafka.errors import KafkaError
-
-producer = KafkaProducer()
+from app.services.serializer import serialize
 
 
-class LogLevel(enum.Enum):
-    INFO = 0
-    WARNING = 1
-    ERROR = 2
-    CRITICAL = 3
-
-
-async def send_log_message(message: str):
-    future = producer.send("logger", b"{} {}".format())
+async def send_log_message(log_level: str, message: str):
+    producer = AIOKafkaProducer(key_serializer=serialize, value_serializer=serialize)
+    await producer.start()
 
     try:
-        future.get(timeout=10)
-        logger.exception()
-
-    except KafkaError:
-        # Decide what to do if produce request failed...
-        logger.exception()
-        pass
+        await producer.send_and_wait("logger", {"level": log_level, "message": message}, key="sms_manager")
+    finally:
+        await producer.stop()
