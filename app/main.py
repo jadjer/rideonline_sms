@@ -13,8 +13,14 @@
 #  limitations under the License.
 
 import asyncio
-from app import run
+
+from app.consumers.get_message import get_message
+from app.sms_manager import sms_handler
 
 
-if __name__ == '__main__':
-    asyncio.run(run())
+async def run():
+    queue = asyncio.Queue()
+    await asyncio.gather(
+        sms_handler(queue),
+        get_message(queue),
+    )

@@ -13,8 +13,22 @@
 #  limitations under the License.
 
 import asyncio
-from app import run
+
+from app.logger import log_critical
+from app.logger import log_info
+from app.models.domain.command import Command
+from app.services.sms import send_sms_to_phone
 
 
-if __name__ == '__main__':
-    asyncio.run(run())
+async def sms_handler(queue: asyncio.Queue):
+    while True:
+        await log_info("Await new message from kafka")
+        message: Command = await queue.get()
+
+        await log_info("Get new message from queue")
+
+        is_sent = await send_sms_to_phone("http://192.168.1.1", message.phone, message.message)
+        if not is_sent:
+            await log_critical("Sms has not sent")
+
+        queue.task_done()

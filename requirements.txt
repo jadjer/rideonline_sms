@@ -1,0 +1,6 @@
+aiokafka
+pydantic
+xmltodict
+httpx
+phonenumbers
+loguru

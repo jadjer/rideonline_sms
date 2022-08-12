@@ -12,9 +12,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-from app import run
+from loguru import logger
 
 
-if __name__ == '__main__':
-    asyncio.run(run())
+async def log_info(message):
+    logger.info(message)
+
+
+async def log_warning(message):
+    logger.warning(message)
+
+
+async def log_error(message):
+    logger.error(message)
+
+
+async def log_critical(message):
+    logger.critical(message)

@@ -12,9 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-from app import run
-
-
-if __name__ == '__main__':
-    asyncio.run(run())
+from .logger import log_info
+from .logger import log_warning
+from .logger import log_error
+from .logger import log_critical

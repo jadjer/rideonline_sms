@@ -12,9 +12,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-from app import run
+import json
+from app.logger import log_error
 
 
-if __name__ == '__main__':
-    asyncio.run(run())
+async def serialize(message: str) -> bytes:
+    return json.dumps(message).encode('ascii')
+
+
+async def deserialize(encoded_message: bytes) -> str:
+    try:
+        return json.loads(encoded_message.decode('ascii'))
+
+    except json.JSONDecodeError as exception:
+        await log_error(exception)
