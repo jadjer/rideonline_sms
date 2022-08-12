@@ -14,18 +14,24 @@
 
 from loguru import logger
 
+from .logger_producer import send_log_message
+
 
 async def log_info(message):
     logger.info(message)
+    await send_log_message("INFO", message)
 
 
 async def log_warning(message):
     logger.warning(message)
+    await send_log_message("WARNING", message)
 
 
 async def log_error(message):
     logger.error(message)
+    await send_log_message("ERROR", message)
 
 
 async def log_critical(message):
     logger.critical(message)
+    await send_log_message("CRITICAL", message)

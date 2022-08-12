@@ -18,17 +18,17 @@ from asyncio import Queue
 
 from app.logger import log_error
 from app.logger import log_info
-from app.models.domain.command import Command
+from app.models.command import Command
 from app.services.serializer import deserialize
 
 
 async def get_message(queue: Queue):
-    consumer = AIOKafkaConsumer("sms", value_deserializer=deserialize)
+    consumer = AIOKafkaConsumer("sms", key_deserializer=deserialize, value_deserializer=deserialize)
     await consumer.start()
 
     try:
         async for consumer_record in consumer:
-            message = await consumer_record.value
+            message = consumer_record.value
 
             try:
                 new_command = Command(**message)
