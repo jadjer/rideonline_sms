@@ -16,11 +16,14 @@ import asyncio
 
 from app.logger import log_info
 from app.models.command import Command
-from app.services.sms import send_sms_to_phone
+from app.services.hilink import HiLinkAssistant
 from app.services.validator import check_phone_is_valid
+from app.settings import AppSettings
 
 
-async def sms_handler(queue: asyncio.Queue):
+async def sms_handler(settings: AppSettings, queue: asyncio.Queue):
+    hilink = HiLinkAssistant(settings.sms_api_host, settings.sms_api_user, settings.sms_api_pass)
+
     while True:
         await log_info("Await new message from kafka")
         message: Command = await queue.get()
@@ -28,6 +31,6 @@ async def sms_handler(queue: asyncio.Queue):
         await log_info("Get new message from queue")
 
         if await check_phone_is_valid(message.phone):
-            await send_sms_to_phone("http://192.168.1.1", message.phone, message.message)
+            await hilink.send_sms_to_phone(message.phone, message.message)
 
         queue.task_done()

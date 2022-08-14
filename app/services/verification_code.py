@@ -12,12 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import json
+from app.services.hilink import HiLink
 
 
-def serialize(message: str) -> bytes:
-    return json.dumps(message).encode("utf-8")
+async def send_verify_code_to_phone(hilink: HiLink, phone: str, verify_code: int) -> bool:
+    verification_message = "{code} is your verification code.".format(code=verify_code)
 
-
-def deserialize(encoded_message: bytes) -> str:
-    return json.loads(encoded_message.decode("utf-8"))
+    return await hilink.send_sms_to_phone(phone, verification_message)

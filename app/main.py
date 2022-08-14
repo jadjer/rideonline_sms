@@ -14,13 +14,16 @@
 
 import asyncio
 
-from app.consumers.get_message import get_message
+from app.get_message_from_kafka import get_message_from_kafka
 from app.sms_manager import sms_handler
+from app.settings import AppSettings
 
 
 async def run():
+    settings = AppSettings()
     queue = asyncio.Queue()
+
     await asyncio.gather(
-        sms_handler(queue),
-        get_message(queue),
+        sms_handler(settings, queue),
+        get_message_from_kafka(settings, queue),
     )

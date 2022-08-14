@@ -20,10 +20,17 @@ from app.logger import log_error
 from app.logger import log_info
 from app.models.command import Command
 from app.services.serializer import deserialize
+from app.settings import AppSettings
 
 
-async def get_message(queue: Queue):
-    consumer = AIOKafkaConsumer("sms", key_deserializer=deserialize, value_deserializer=deserialize)
+async def get_message_from_kafka(settings: AppSettings, queue: Queue):
+    consumer = AIOKafkaConsumer(
+        "sms",
+        bootstrap_servers=settings.kafka_host,
+        key_deserializer=deserialize,
+        value_deserializer=deserialize
+    )
+
     await consumer.start()
 
     try:
