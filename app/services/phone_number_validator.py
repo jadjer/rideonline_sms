@@ -12,28 +12,28 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from loguru import logger
 from phonenumbers import (
     NumberParseException,
     parse,
     is_possible_number,
     is_valid_number,
 )
-from app.logger import log_warning
 
 
-async def check_phone_is_valid(phone_number: str) -> bool:
+def check_phone_is_valid(phone_number: str) -> bool:
     try:
         phone = parse(phone_number, None)
     except NumberParseException:
-        await log_warning(f"Phone number {phone_number} parser error")
+        logger.warning(f"Phone number {phone_number} parser error")
         return False
 
     if not is_possible_number(phone):
-        await log_warning(f"Phone number {phone_number} is impossible number")
+        logger.warning(f"Phone number {phone_number} is inpossible number")
         return False
 
     if not is_valid_number(phone):
-        await log_warning(f"Phone number {phone_number} is invalid number")
+        logger.warning(f"Phone number {phone_number} is invalid number")
         return False
 
     return True

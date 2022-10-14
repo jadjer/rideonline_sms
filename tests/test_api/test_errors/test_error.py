@@ -12,8 +12,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from pydantic import BaseModel, Field
+import pytest
+from fastapi import FastAPI, status
+from httpx import AsyncClient
 
 
-class IDModelMixin(BaseModel):
-    id: int = Field(0, alias="id")
+@pytest.mark.asyncio
+async def test_frw_validation_error_format(app: FastAPI):
+    async with AsyncClient(base_url="http://localhost:10000", app=app) as client:
+        response = await client.get("/wrong_path/asd")
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    error_data = response.json()
+    assert "Not Found" in error_data["detail"]

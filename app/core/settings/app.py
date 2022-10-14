@@ -12,12 +12,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import json
+import logging
+
+from pydantic import HttpUrl
+
+from app.core.settings.base import BaseAppSettings
 
 
-def serialize(message: str) -> bytes:
-    return json.dumps(message).encode('ascii')
+class AppSettings(BaseAppSettings):
+    debug: bool = False
+    title: str = "SmsManager"
+    version: str = "0.0.1"
 
+    rabbitmq_server: str
+    rabbitmq_channel: str = "sms"
 
-def deserialize(encoded_message: bytes) -> str:
-    return json.loads(encoded_message.decode('ascii'))
+    sms_api_host: HttpUrl
+    sms_api_user: str
+    sms_api_pass: str
+    sms_max_chars: int = 160
+
+    logging_level: int = logging.INFO
+
+    class Config:
+        validate_assignment = True

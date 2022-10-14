@@ -12,8 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from app import App
+from pydantic import BaseSettings
 
-if __name__ == '__main__':
-    app = App()
-    app.run()
+
+class BaseAppSettings(BaseSettings):
+    class Config:
+        env_file = ".env"

@@ -1,6 +1,6 @@
-aiokafka
-pydantic
+pydantic[dotenv]
+loguru
 xmltodict
 httpx
 phonenumbers
-loguru
+pika

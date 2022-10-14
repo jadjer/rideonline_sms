@@ -1,1 +1,2 @@
-# Ride2Online_SmsManager
+# sms_manager
+Sms manager controlled from rest api

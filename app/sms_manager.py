@@ -12,22 +12,45 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
+from queue import Queue
 
-from app.logger import log_info
-from app.models.command import Command
-from app.services.sms import send_sms_to_phone
-from app.services.validator import check_phone_is_valid
+from loguru import logger
+
+from app.core.settings.app import AppSettings
+from app.models.schemas.sms import Message
+from app.resources import strings
+from app.services.phone_number_validator import check_phone_is_valid
+from app.services.sms import is_hilink, send_sms_to_phone
 
 
-async def sms_handler(queue: asyncio.Queue):
-    while True:
-        await log_info("Await new message from kafka")
-        message: Command = await queue.get()
+class SmsManager(object):
+    __queue: Queue
+    __enable: bool
+    __settings: AppSettings
 
-        await log_info("Get new message from queue")
+    def __init__(self, settings: AppSettings, queue: Queue):
+        self.__queue = queue
+        self.__enable = True
+        self.__settings = settings
 
-        if await check_phone_is_valid(message.phone):
-            await send_sms_to_phone("http://192.168.1.1", message.phone, message.message)
+    def __del__(self):
+        self.__enable = False
 
-        queue.task_done()
+    def spin(self):
+        while self.__enable:
+            self.spin_once()
+
+    def spin_once(self):
+        data = self.__queue.get()
+        message = Message.parse_raw(data)
+
+        logger.debug("{} <= {}".format(message.phone, message.text))
+
+        if not check_phone_is_valid(message.phone):
+            logger.error(strings.PHONE_NUMBER_INVALID_ERROR)
+
+        if not is_hilink(self.__settings.sms_api_host):
+            logger.error(strings.VERIFICATION_SERVICE_TEMPORARY_UNAVAILABLE)
+
+        if not send_sms_to_phone(self.__settings.sms_api_host, message.phone, message.text):
+            logger.error(strings.VERIFICATION_SERVICE_SEND_SMS_ERROR)

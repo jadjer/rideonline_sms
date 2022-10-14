@@ -11,17 +11,3 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
-from aiokafka import AIOKafkaProducer
-
-from app.services.serializer import serialize
-
-
-async def send_log_message(log_level: str, message: str):
-    producer = AIOKafkaProducer(key_serializer=serialize, value_serializer=serialize)
-    await producer.start()
-
-    try:
-        await producer.send_and_wait("logger", {"level": log_level, "message": message}, key="sms_manager")
-    finally:
-        await producer.stop()

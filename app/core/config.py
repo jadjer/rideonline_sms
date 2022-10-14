@@ -12,7 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from .logger import log_info
-from .logger import log_warning
-from .logger import log_error
-from .logger import log_critical
+from functools import lru_cache
+
+from app.core.settings.app import AppSettings
+
+
+@lru_cache
+def get_app_settings() -> AppSettings:
+    config = AppSettings
+
+    return config()
