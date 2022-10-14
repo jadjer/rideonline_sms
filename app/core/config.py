@@ -12,12 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import json
+from functools import lru_cache
+
+from app.core.settings.app import AppSettings
 
 
-def serialize(message: str) -> bytes:
-    return json.dumps(message).encode("utf-8")
+@lru_cache
+def get_app_settings() -> AppSettings:
+    config = AppSettings
 
-
-def deserialize(encoded_message: bytes) -> str:
-    return json.loads(encoded_message.decode("utf-8"))
+    return config()

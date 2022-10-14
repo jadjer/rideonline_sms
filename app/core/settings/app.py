@@ -12,7 +12,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from .logger import log_info
-from .logger import log_warning
-from .logger import log_error
-from .logger import log_critical
+import logging
+
+from pydantic import HttpUrl
+
+from app.core.settings.base import BaseAppSettings
+
+
+class AppSettings(BaseAppSettings):
+    debug: bool = False
+    title: str = "SmsManager"
+    version: str = "0.0.1"
+
+    rabbitmq_server: str
+    rabbitmq_channel: str = "sms"
+
+    sms_api_host: HttpUrl
+    sms_api_user: str
+    sms_api_pass: str
+    sms_max_chars: int = 160
+
+    logging_level: int = logging.INFO
+
+    class Config:
+        validate_assignment = True

@@ -11,11 +11,3 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
-from app.services.hilink import HiLink
-
-
-async def send_verify_code_to_phone(hilink: HiLink, phone: str, verify_code: int) -> bool:
-    verification_message = "{code} is your verification code.".format(code=verify_code)
-
-    return await hilink.send_sms_to_phone(phone, verification_message)

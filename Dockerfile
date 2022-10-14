@@ -1,19 +1,15 @@
 FROM python
 
-ENV KAFKA_HOST="127.0.0.1"
-
 WORKDIR /app
 
-COPY ./requirements.txt /app/requirements.txt
+RUN python -m venv venv
 
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 
-COPY ./app /app/app
-COPY ./main.py /app/main.py
+RUN /app/venv/bin/pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-RUN useradd -ms /bin/bash user_app
-USER user_app
+COPY main.py /app/main.py
+COPY app /app/app
+COPY .env /app/.env
 
-EXPOSE 9092
-
-CMD ["python", "main.py"]
+CMD ["/app/venv/bin/python", "./main.py"]

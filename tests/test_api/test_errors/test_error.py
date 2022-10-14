@@ -12,18 +12,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import asyncio
-
-from app.get_message_from_kafka import get_message_from_kafka
-from app.sms_manager import sms_handler
-from app.settings import AppSettings
+import pytest
+from fastapi import FastAPI, status
+from httpx import AsyncClient
 
 
-async def run():
-    settings = AppSettings()
-    queue = asyncio.Queue()
+@pytest.mark.asyncio
+async def test_frw_validation_error_format(app: FastAPI):
+    async with AsyncClient(base_url="http://localhost:10000", app=app) as client:
+        response = await client.get("/wrong_path/asd")
 
-    await asyncio.gather(
-        sms_handler(settings, queue),
-        get_message_from_kafka(settings, queue),
-    )
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    error_data = response.json()
+    assert "Not Found" in error_data["detail"]

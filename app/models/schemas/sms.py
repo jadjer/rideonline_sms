@@ -12,8 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
-class IDModelMixin(BaseModel):
-    id: int = Field(0, alias="id")
+class Message(BaseModel):
+    phone: str
+    text: str
