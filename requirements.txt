@@ -4,3 +4,4 @@ xmltodict
 httpx
 phonenumbers
 pika
+pytest

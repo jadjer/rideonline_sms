@@ -14,26 +14,29 @@
 
 import pytest
 from queue import Queue
-from app.core.settings.app import AppSettings
+
 from app.sms_manager import SmsManager
 
 
-@pytest.fixture
-def settings() -> AppSettings:
-    from app.core.config import get_app_settings
+def test_send_empty_message(sms_manager: SmsManager):
+    payload = ""
 
-    return get_app_settings()
-
-
-@pytest.fixture
-def queue() -> Queue:
-    queue = Queue()
-
-    return queue
+    assert not sms_manager.process(payload)
 
 
-@pytest.fixture
-def sms_manager(settings: AppSettings, queue: Queue) -> SmsManager:
-    sms_manager = SmsManager(settings, queue)
+def test_send_wrong_message(sms_manager: SmsManager):
+    payload = "qwe"
 
-    return sms_manager
+    assert not sms_manager.process(payload)
+
+
+def test_send_incorrect_message_with_failure_phone_number(sms_manager: SmsManager):
+    payload = '{"phone": "+123456789", "text": "test"}'
+
+    assert not sms_manager.process(payload)
+
+
+def test_send_correct_message_with_failure_data_field_name(sms_manager: SmsManager):
+    payload = '{"phone": "+375257133519", "message": "test"}'
+
+    assert not sms_manager.process(payload)

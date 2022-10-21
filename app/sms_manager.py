@@ -42,15 +42,27 @@ class SmsManager(object):
 
     def spin_once(self):
         data = self.__queue.get()
-        message = Message.parse_raw(data)
+        self.process(data)
+
+    def process(self, data: str) -> bool:
+        try:
+            message = Message.parse_raw(data)
+        except BaseException as exception:
+            logger.error(exception)
+            return False
 
         logger.debug("{} <= {}".format(message.phone, message.text))
 
         if not check_phone_is_valid(message.phone):
             logger.error(strings.PHONE_NUMBER_INVALID_ERROR)
+            return False
 
         if not is_hilink(self.__settings.sms_api_host):
             logger.error(strings.VERIFICATION_SERVICE_TEMPORARY_UNAVAILABLE)
+            return False
 
         if not send_sms_to_phone(self.__settings.sms_api_host, message.phone, message.text):
             logger.error(strings.VERIFICATION_SERVICE_SEND_SMS_ERROR)
+            return False
+
+        return True
