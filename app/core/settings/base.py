@@ -17,4 +17,5 @@ from pydantic import BaseSettings
 
 class BaseAppSettings(BaseSettings):
     class Config:
-        env_file = ".env"
+        case_sensitive = False
+        validate_assignment = True

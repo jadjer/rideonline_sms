@@ -33,6 +33,3 @@ class AppSettings(BaseAppSettings):
     sms_max_chars: int = 160
 
     logging_level: int = logging.INFO
-
-    class Config:
-        validate_assignment = True

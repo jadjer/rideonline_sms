@@ -1,4 +1,4 @@
-pydantic[dotenv]
+pydantic
 loguru
 xmltodict
 httpx
