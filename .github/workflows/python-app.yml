@@ -10,6 +10,12 @@ on:
 permissions:
   contents: read
 
+env:
+  RABBITMQ_SERVER: "192.168.100.6"
+  SMS_API_HOST: "http://192.168.1.1"
+  SMS_API_USER: ""
+  SMS_API_PASS: ""
+
 jobs:
   build:
     runs-on: ubuntu-latest
