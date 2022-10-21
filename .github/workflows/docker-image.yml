@@ -6,10 +6,18 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v3
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag sms_manager --build-arg RABBITMQ_SERVER=$env:RABBITMQ_SERVER --build-arg SMS_API_HOST=$env:SMS_API_HOST --build-arg SMS_API_USER=$env:SMS_API_USER --build-arg SMS_API_PASS=$env:SMS_API_PASS
+
+  deploy:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy the docker image
+        run: docker push sms_manager
