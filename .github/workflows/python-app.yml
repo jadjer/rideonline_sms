@@ -30,8 +30,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        echo RABBITMQ_SERVER=$env:RABBITMQ_SERVER >> .env
-        echo SMS_API_HOST=$env:SMS_API_HOST >> .env
-        echo SMS_API_USER=$env:SMS_API_USER >> .env
-        echo SMS_API_PASS=$env:SMS_API_PASS >> .env
+        echo RABBITMQ_SERVER=${{ env.RABBITMQ_SERVER }} >> .env
+        echo SMS_API_HOST=${{ env.SMS_API_HOST }} >> .env
+        echo SMS_API_USER=${{ env.SMS_API_USER }} >> .env
+        echo SMS_API_PASS=${{ env.SMS_API_PASS }} >> .env
         pytest
