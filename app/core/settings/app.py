@@ -24,12 +24,13 @@ class AppSettings(BaseAppSettings):
     title: str = "SmsManager"
     version: str = "0.0.1"
 
-    rabbitmq_server: str
+    rabbitmq_server: str = "localhost"
+    rabbitmq_user: str = ""
+    rabbitmq_pass: str = ""
     rabbitmq_channel: str = "sms"
 
-    sms_api_host: HttpUrl
-    sms_api_user: str
-    sms_api_pass: str
-    sms_max_chars: int = 160
+    sms_api_host: HttpUrl = "http://127.0.0.1"
+    sms_api_user: str = ""
+    sms_api_pass: str = ""
 
     logging_level: int = logging.INFO

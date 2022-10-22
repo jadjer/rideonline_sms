@@ -14,7 +14,7 @@
 
 from queue import Queue
 
-from pika import BlockingConnection, ConnectionParameters
+from pika import BlockingConnection, ConnectionParameters, PlainCredentials
 from loguru import logger
 
 from app.core.settings.app import AppSettings
@@ -28,7 +28,11 @@ class RabbitMQClient(object):
     def __init__(self, settings: AppSettings, queue: Queue):
         self.__queue = queue
         self.__settings = settings
-        self.__connection = BlockingConnection(ConnectionParameters(self.__settings.rabbitmq_server))
+
+        credentials = PlainCredentials(self.__settings.rabbitmq_user, self.__settings.rabbitmq_pass)
+        parameters = ConnectionParameters(self.__settings.rabbitmq_server, credentials=credentials)
+
+        self.__connection = BlockingConnection(parameters)
 
     def start(self):
         channel = self.__connection.channel()
