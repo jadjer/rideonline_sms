@@ -8,21 +8,17 @@ jobs:
   build:
     name: Build Docker image
     runs-on: ubuntu-latest
-    environment: production
+    environment: build
     env:
       RABBITMQ_SERVER: ${{ secrets.RABBITMQ_SERVER }}
-      RABBITMQ_USER: jadjer
-      RABBITMQ_PASS: Alchogol01
-      SMS_API_HOST: http://192.168.1.1
-      SMS_API_USER:
-      SMS_API_PASS:
+      RABBITMQ_USER: ${{ secrets.RABBITMQ_USER }}
+      RABBITMQ_PASS: ${{ secrets.RABBITMQ_PASS }}
+      SMS_API_HOST: ${{ secrets.SMS_API_HOST }}
+      SMS_API_USER: ${{ secrets.SMS_API_USER }}
+      SMS_API_PASS: ${{ secrets.SMS_API_PASS }}
     steps:
       - uses: actions/checkout@v3
-      - name: Test environment 1
-        run: echo $RABBITMQ_SERVER
-      - name: Test environment 2
-        run: echo RABBITMQ_SERVER_ENV
-      - name: Build the Docker image with $RABBITMQ_SERVER
+      - name: Build the Docker image
         run: docker build . --tag sms_manager -e RABBITMQ_SERVER=$RABBITMQ_SERVER -e RABBITMQ_USER=$RABBITMQ_USER -e RABBITMQ_PASS=$RABBITMQ_PASS -e SMS_API_HOST=SMS_API_HOST
 
   deployment:
