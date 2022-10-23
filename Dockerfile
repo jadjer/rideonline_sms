@@ -16,4 +16,7 @@ RUN /app/venv/bin/pip install --no-cache-dir --upgrade -r /app/requirements.txt
 COPY main.py /app/main.py
 COPY app /app/app
 
+EXPOSE 5672/tcp
+EXPOSE 15672/tcp
+
 CMD ["/app/venv/bin/python", "./main.py"]
