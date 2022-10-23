@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build the Docker image
-        run: docker build . --tag sms_manager -e RABBITMQ_SERVER=${{ env.RABBITMQ_SERVER }} -e RABBITMQ_USER=${{ env.RABBITMQ_USER }} -e RABBITMQ_PASS=${{ env.RABBITMQ_PASS }} -e SMS_API_HOST=${{ env.SMS_API_HOST }}
+        run: docker build . --tag sms_manager -e RABBITMQ_SERVER=${{ env:RABBITMQ_SERVER }} -e RABBITMQ_USER=${{ env:RABBITMQ_USER }} -e RABBITMQ_PASS=${{ env:RABBITMQ_PASS }} -e SMS_API_HOST=${{ env:SMS_API_HOST }}
 
   deploy:
     name: Push Docker image to Docker Hub
