@@ -12,37 +12,30 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from queue import Queue
-
 from pika import BlockingConnection, ConnectionParameters, PlainCredentials
 from loguru import logger
+from multiprocessing import Queue
 
 from app.core.settings.app import AppSettings
 
 
 class RabbitMQClient(object):
-    __queue: Queue
-    __settings: AppSettings
-    __connection: BlockingConnection
+    settings: AppSettings
 
-    def __init__(self, settings: AppSettings, queue: Queue):
-        self.__queue = queue
-        self.__settings = settings
+    def __init__(self, settings: AppSettings):
+        self.settings = settings
 
-        credentials = PlainCredentials(self.__settings.rabbitmq_user, self.__settings.rabbitmq_pass)
-        parameters = ConnectionParameters(self.__settings.rabbitmq_server, credentials=credentials)
-
-        self.__connection = BlockingConnection(parameters)
-
-    def start(self):
-        channel = self.__connection.channel()
-        channel.queue_declare(queue=self.__settings.rabbitmq_channel)
-
+    def run(self, queue: Queue):
         def callback(cb, method, parameters, body):
-            self.__queue.put(body)
+            queue.put(body)
 
-        channel.basic_consume(queue=self.__settings.rabbitmq_channel, on_message_callback=callback, auto_ack=True)
+        logger.info("Started RabbitMQ client on {server} server".format(server=self.settings.rabbitmq_server))
 
-        logger.info("Started RabbitMQ client on {server} server".format(server=self.__settings.rabbitmq_server))
+        credentials = PlainCredentials(self.settings.rabbitmq_user, self.settings.rabbitmq_pass)
+        parameters = ConnectionParameters(self.settings.rabbitmq_server, credentials=credentials)
+        connection = BlockingConnection(parameters)
 
+        channel = connection.channel()
+        channel.queue_declare(queue=self.settings.rabbitmq_channel)
+        channel.basic_consume(queue=self.settings.rabbitmq_channel, on_message_callback=callback, auto_ack=True)
         channel.start_consuming()

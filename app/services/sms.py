@@ -16,6 +16,7 @@ import contextlib
 from datetime import datetime
 from typing import List
 
+import httpx
 import xmltodict as xmltodict
 from httpx import Client
 from pydantic import HttpUrl
@@ -46,7 +47,10 @@ SMS_SEND_TEMPLATE = """<request>
 
 def is_hilink(device_host: HttpUrl) -> bool:
     with Client(base_url=device_host) as client:
-        response = client.get("/api/device/information", timeout=2.0)
+        try:
+            response = client.get("/api/device/information", timeout=2.0)
+        except httpx.ConnectTimeout as err:
+            return False
 
     if response.status_code != 200:
         return False
@@ -59,7 +63,10 @@ def get_headers(device_host: HttpUrl) -> dict:
     session_id = None
 
     with Client(base_url=device_host) as client:
-        response = client.get("/api/webserver/SesTokInfo")
+        try:
+            response = client.get("/api/webserver/SesTokInfo")
+        except httpx.ConnectTimeout as err:
+            return {}
 
     if response.status_code != 200:
         return {'__RequestVerificationToken': token, 'Cookie': session_id}
@@ -81,7 +88,10 @@ def get_sms(device_host: HttpUrl, headers: dict):
     payload = SMS_LIST_TEMPLATE
 
     with Client(base_url=device_host) as client:
-        response = client.post("/api/sms/sms-list", data=payload, headers=headers)
+        try:
+            response = client.post("/api/sms/sms-list", data=payload, headers=headers)
+        except httpx.ConnectTimeout as err:
+            pass
 
     response_data = xmltodict.parse(response.text, xml_attribs=True)
     num_messages = int(response_data['response']['Count'])
@@ -111,7 +121,10 @@ def del_message(device_host: HttpUrl, headers: dict, index: int) -> None:
     payload = SMS_DEL_TEMPLATE.format(index=index)
 
     with Client(base_url=device_host) as client:
-        response = client.post("/api/sms/delete-sms", data=payload, headers=headers)
+        try:
+            response = client.post("/api/sms/delete-sms", data=payload, headers=headers)
+        except httpx.ConnectTimeout as err:
+            pass
 
     response_data = xmltodict.parse(response.text, xml_attribs=True)
     print(response_data['response'])
@@ -119,7 +132,10 @@ def del_message(device_host: HttpUrl, headers: dict, index: int) -> None:
 
 def get_unread(device_host: HttpUrl, headers: dict) -> int:
     with Client(base_url=device_host) as client:
-        response = client.get("/api/monitoring/check-notifications", headers=headers)
+        try:
+            response = client.get("/api/monitoring/check-notifications", headers=headers)
+        except httpx.ConnectTimeout as err:
+            return False
 
     response_data = xmltodict.parse(response.text, xml_attribs=True)
     unread = int(response_data['response']['UnreadMessage'])
@@ -129,7 +145,10 @@ def get_unread(device_host: HttpUrl, headers: dict) -> int:
 
 def wait_send_sms_to_phone(device_host: HttpUrl, phone_number: str) -> bool:
     with Client(base_url=device_host) as client:
-        response = client.get("/api/sms/send-status")
+        try:
+            response = client.get("/api/sms/send-status")
+        except httpx.ConnectTimeout as err:
+            return False
 
     response_data = xmltodict.parse(response.text, xml_attribs=True)
     phone = response_data["response"]["Phone"]
@@ -160,13 +179,17 @@ def send_sms_to_phone(device_host: HttpUrl, phone: str, message: str) -> bool:
     )
 
     with Client(base_url=device_host) as client:
-        response = client.post("/api/sms/send-sms", data=payload)
-        if response.status_code != 200:
+        try:
+            response = client.post("/api/sms/send-sms", data=payload)
+            if response.status_code != 200:
+                return False
+
+            response_data = xmltodict.parse(response.text, xml_attribs=True)
+
+            return response_data["response"] == "OK"
+
+        except httpx.ConnectTimeout as err:
             return False
-
-        response_data = xmltodict.parse(response.text, xml_attribs=True)
-
-        return response_data["response"] == "OK"
 
 
 def send_verify_code_to_phone(device_host: HttpUrl, phone: str, verify_code: int) -> bool:

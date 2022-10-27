@@ -12,8 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from queue import Queue
-from threading import Thread
+import multiprocessing
 
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
@@ -22,20 +21,20 @@ from app.sms_manager import SmsManager
 
 
 class App(object):
-    __queue: Queue
-    __thread: Thread
-    __settings: AppSettings
-    __sms_manager: SmsManager
-    __rabbit_client: RabbitMQClient
+    settings: AppSettings
+    sms_manager: SmsManager
+    rabbit_client: RabbitMQClient
 
     def __init__(self):
-        self.__queue = Queue()
-        self.__settings = get_app_settings()
-        self.__sms_manager = SmsManager(self.__settings, self.__queue)
-        self.__rabbit_client = RabbitMQClient(self.__settings, self.__queue)
+        self.settings = get_app_settings()
+        self.sms_manager = SmsManager(self.settings)
+        self.rabbit_client = RabbitMQClient(self.settings)
 
     def run(self):
-        self.__thread = Thread(target=self.__sms_manager.spin)
-        self.__thread.start()
+        queue = multiprocessing.Queue()
 
-        self.__rabbit_client.start()
+        sms_manager = multiprocessing.Process(target=self.sms_manager.run, args=(queue,))
+        rabbit_client = multiprocessing.Process(target=self.rabbit_client.run, args=(queue,))
+
+        sms_manager.start(), rabbit_client.start()
+        sms_manager.join(), rabbit_client.join()
