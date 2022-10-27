@@ -21,14 +21,14 @@ from app.sms_manager import SmsManager
 
 
 class App(object):
-    settings: AppSettings
     sms_manager: SmsManager
     rabbit_client: RabbitMQClient
 
     def __init__(self):
-        self.settings = get_app_settings()
-        self.sms_manager = SmsManager(self.settings)
-        self.rabbit_client = RabbitMQClient(self.settings)
+        settings = get_app_settings()
+
+        self.sms_manager = SmsManager(settings)
+        self.rabbit_client = RabbitMQClient(settings)
 
     def run(self):
         queue = multiprocessing.Queue()

@@ -15,11 +15,11 @@
 from loguru import logger
 from multiprocessing import Queue
 
+from app.resources import strings
+from app.services.sms import is_hilink, send_sms_to_phone
 from app.core.settings.app import AppSettings
 from app.models.schemas.sms import Message
-from app.resources import strings
 from app.services.phone_number_validator import check_phone_is_valid
-from app.services.sms import is_hilink, send_sms_to_phone
 
 
 class SmsManager(object):
