@@ -18,18 +18,17 @@ from protos.status_pb2 import Status
 from protos.service.sms_pb2 import SmsSendRequest, SmsSendResponse
 from protos.service.sms_pb2_grpc import SmsServicer
 
+from app.core.settings.app import AppSettings
 from app.resources import strings
-from app.core.config import get_app_settings
 from app.services.sms import is_hilink, send_sms_to_phone
 from app.services.phone_number_validator import check_phone_is_valid
 
 
 class Service(SmsServicer):
+    def __init__(self, settings: AppSettings):
+        self.settings = settings
 
-    def __init__(self):
-        self.settings = get_app_settings()
-
-    def send(self, request: SmsSendRequest, context) -> SmsSendResponse:
+    def send(self, request, context):
         logger.debug("{} <= {}".format(request.phone, request.message))
 
         if not check_phone_is_valid(request.phone):

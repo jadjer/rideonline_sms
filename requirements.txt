@@ -4,4 +4,5 @@ xmltodict
 httpx
 phonenumbers
 pytest
+protobuf
 grpcio

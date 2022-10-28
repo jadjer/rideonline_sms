@@ -12,22 +12,24 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import logging
-
-from pydantic import HttpUrl
-
-from app.core.settings.base import BaseAppSettings
+from app.service import check_phone_is_valid
 
 
-class AppSettings(BaseAppSettings):
-    debug: bool = False
-    title: str = "SmsManager"
-    version: str = "0.0.1"
+def test_empty_phone():
+    phone = ""
+    assert not check_phone_is_valid(phone)
 
-    port: int
 
-    sms_api_host: HttpUrl
-    sms_api_user: str = ""
-    sms_api_pass: str = ""
+def test_wrong_phone():
+    phone = "qwe"
+    assert not check_phone_is_valid(phone)
 
-    logging_level: int = logging.INFO
+
+def test_incorrect_phone():
+    phone = "+123456789"
+    assert not check_phone_is_valid(phone)
+
+
+def test_correct_phone():
+    phone = "+375259876543"
+    assert check_phone_is_valid(phone)

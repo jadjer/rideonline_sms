@@ -12,31 +12,28 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import pytest
-from queue import Queue
-
-from app.sms_manager import SmsManager
+from protos.service.sms_pb2 import SmsSendRequest, SmsSendResponse
 
 
-def test_send_empty_message(sms_manager: SmsManager):
-    payload = ""
+def test_send_empty_message(sms_service):
+    request = SmsSendRequest()
+    response = sms_service.send(request, None)
 
-    assert not sms_manager.process(payload)
-
-
-def test_send_wrong_message(sms_manager: SmsManager):
-    payload = "qwe"
-
-    assert not sms_manager.process(payload)
+    assert not response.is_send
+    assert response.status.in_error
 
 
-def test_send_incorrect_message_with_failure_phone_number(sms_manager: SmsManager):
-    payload = '{"phone": "+123456789", "text": "test"}'
+def test_send_incorrect_message_with_failure_phone_number(sms_service):
+    request = SmsSendRequest(phone="+123456789", message="test")
+    response = sms_service.send(request, None)
 
-    assert not sms_manager.process(payload)
+    assert not response.is_send
+    assert response.status.in_error
 
 
-def test_send_correct_message_with_failure_data_field_name(sms_manager: SmsManager):
-    payload = '{"phone": "+375257133519", "message": "test"}'
+def test_send_correct_message_with_failure_data_field_name(sms_service):
+    request = SmsSendRequest(phone="+375259876543", message="test")
+    response = sms_service.send(request, None)
 
-    assert not sms_manager.process(payload)
+    assert not response.is_send
+    assert response.status.in_error
