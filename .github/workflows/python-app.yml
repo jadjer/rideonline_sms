@@ -9,9 +9,7 @@ permissions:
   contents: read
 
 env:
-  RABBITMQ_SERVER: "127.0.0.1"
-  RABBITMQ_USER: "user"
-  RABBITMQ_PASS: "password"
+  PORT: 1234
   SMS_API_HOST: "http://127.0.0.1"
 
 jobs:
