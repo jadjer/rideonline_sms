@@ -29,11 +29,3 @@ def test_send_incorrect_message_with_failure_phone_number(sms_service):
 
     assert not response.is_send
     assert response.status.in_error
-
-
-def test_send_correct_message_with_failure_data_field_name(sms_service):
-    request = SmsSendRequest(phone="+375259876543", message="test")
-    response = sms_service.send(request, None)
-
-    assert not response.is_send
-    assert response.status.in_error
