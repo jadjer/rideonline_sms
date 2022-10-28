@@ -21,8 +21,7 @@ from protos.service import sms_pb2_grpc
 from app.core.config import get_app_settings
 
 
-class App(sms_pb2_grpc.SmsServicer):
-
+class App(object):
     def __init__(self):
         self.settings = get_app_settings()
 
