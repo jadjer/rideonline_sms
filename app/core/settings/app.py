@@ -24,10 +24,7 @@ class AppSettings(BaseAppSettings):
     title: str = "SmsManager"
     version: str = "0.0.1"
 
-    rabbitmq_server: str
-    rabbitmq_user: str
-    rabbitmq_pass: str
-    rabbitmq_channel: str = "sms"
+    port: int
 
     sms_api_host: HttpUrl
     sms_api_user: str = ""

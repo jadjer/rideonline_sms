@@ -12,30 +12,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from queue import Queue
-from threading import Thread
+import grpc
 
+from loguru import logger
+from concurrent import futures
+from app.service import Service
+from protos.service import sms_pb2_grpc
 from app.core.config import get_app_settings
-from app.core.settings.app import AppSettings
-from app.rabbitmq_client import RabbitMQClient
-from app.sms_manager import SmsManager
 
 
-class App(object):
-    __queue: Queue
-    __thread: Thread
-    __settings: AppSettings
-    __sms_manager: SmsManager
-    __rabbit_client: RabbitMQClient
+class App(sms_pb2_grpc.SmsServicer):
 
     def __init__(self):
-        self.__queue = Queue()
-        self.__settings = get_app_settings()
-        self.__sms_manager = SmsManager(self.__settings, self.__queue)
-        self.__rabbit_client = RabbitMQClient(self.__settings, self.__queue)
+        self.settings = get_app_settings()
 
     def run(self):
-        self.__thread = Thread(target=self.__sms_manager.spin)
-        self.__thread.start()
+        port = self.settings.port
 
-        self.__rabbit_client.start()
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        sms_pb2_grpc.add_SmsServicer_to_server(Service(self.settings), server)
+        server.add_insecure_port(f"[::]:{port}")
+        server.start()
+
+        logger.info(f"Server started, listening on {port}")
+        server.wait_for_termination()

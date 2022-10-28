@@ -3,5 +3,6 @@ loguru
 xmltodict
 httpx
 phonenumbers
-pika
 pytest
+protobuf
+grpcio

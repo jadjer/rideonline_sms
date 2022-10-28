@@ -12,9 +12,24 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from pydantic import BaseModel
+from app.service import check_phone_is_valid
 
 
-class Message(BaseModel):
-    phone: str
-    text: str
+def test_empty_phone():
+    phone = ""
+    assert not check_phone_is_valid(phone)
+
+
+def test_wrong_phone():
+    phone = "qwe"
+    assert not check_phone_is_valid(phone)
+
+
+def test_incorrect_phone():
+    phone = "+123456789"
+    assert not check_phone_is_valid(phone)
+
+
+def test_correct_phone():
+    phone = "+375259876543"
+    assert check_phone_is_valid(phone)

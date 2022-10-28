@@ -13,27 +13,17 @@
 #  limitations under the License.
 
 import pytest
-from queue import Queue
-from app.core.settings.app import AppSettings
-from app.sms_manager import SmsManager
+
+from app.service import Service
 
 
 @pytest.fixture
-def settings() -> AppSettings:
+def settings():
     from app.core.config import get_app_settings
 
     return get_app_settings()
 
 
 @pytest.fixture
-def queue() -> Queue:
-    queue = Queue()
-
-    return queue
-
-
-@pytest.fixture
-def sms_manager(settings: AppSettings, queue: Queue) -> SmsManager:
-    sms_manager = SmsManager(settings, queue)
-
-    return sms_manager
+def sms_service(settings):
+    return Service(settings)
