@@ -13,6 +13,7 @@ RUN /app/venv/bin/pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 COPY main.py /app/main.py
 COPY app /app/app
+COPY protos /app/protos
 
 EXPOSE $PORT
 
