@@ -3,5 +3,5 @@ loguru
 xmltodict
 httpx
 phonenumbers
-pika
 pytest
+grpcio
