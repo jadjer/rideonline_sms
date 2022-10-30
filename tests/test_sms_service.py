@@ -16,16 +16,14 @@ from protos.service.sms_pb2 import SmsSendRequest, SmsSendResponse
 
 
 def test_send_empty_message(sms_service):
-    request = SmsSendRequest()
-    response = sms_service.send(request, None)
+    request: SmsSendRequest = SmsSendRequest()
+    response: SmsSendResponse = sms_service.send(request, None)
 
-    assert not response.is_send
     assert response.status.in_error
 
 
 def test_send_incorrect_message_with_failure_phone_number(sms_service):
-    request = SmsSendRequest(phone="+123456789", message="test")
-    response = sms_service.send(request, None)
+    request: SmsSendRequest = SmsSendRequest(phone="+123456789", message="test")
+    response: SmsSendResponse = sms_service.send(request, None)
 
-    assert not response.is_send
     assert response.status.in_error

@@ -28,43 +28,25 @@ class Service(SmsServicer):
     def __init__(self, settings: AppSettings):
         self.settings = settings
 
-    def send(self, request, context):
+    def send(self, request: SmsSendRequest, context) -> SmsSendResponse:
         logger.debug("{} <= {}".format(request.phone, request.message))
 
         if not check_phone_is_valid(request.phone):
             logger.error(strings.PHONE_NUMBER_INVALID_ERROR)
-            return SmsSendResponse(
-                is_send=False,
-                status=Status(
-                    in_error=True,
-                    error_message=strings.PHONE_NUMBER_INVALID_ERROR
-                )
-            )
+            return SmsSendResponse(status=Status(
+                in_error=True, error_message=strings.PHONE_NUMBER_INVALID_ERROR
+            ))
 
         if not is_hilink(self.settings.sms_api_host):
             logger.error(strings.VERIFICATION_SERVICE_TEMPORARY_UNAVAILABLE)
-            return SmsSendResponse(
-                is_send=False,
-                status=Status(
-                    in_error=True,
-                    error_message=strings.VERIFICATION_SERVICE_TEMPORARY_UNAVAILABLE
-                )
-            )
+            return SmsSendResponse(status=Status(
+                in_error=True, error_message=strings.VERIFICATION_SERVICE_TEMPORARY_UNAVAILABLE
+            ))
 
         if not send_sms_to_phone(self.settings.sms_api_host, request.phone, request.message):
             logger.error(strings.VERIFICATION_SERVICE_SEND_SMS_ERROR)
-            return SmsSendResponse(
-                is_send=False,
-                status=Status(
-                    in_error=True,
-                    error_message=strings.VERIFICATION_SERVICE_SEND_SMS_ERROR
-                )
-            )
+            return SmsSendResponse(status=Status(
+                in_error=True, error_message=strings.VERIFICATION_SERVICE_SEND_SMS_ERROR
+            ))
 
-        return SmsSendResponse(
-            is_send=True,
-            status=Status(
-                in_error=False,
-                error_message=""
-            )
-        )
+        return SmsSendResponse(status=Status(in_error=False, error_message=""))

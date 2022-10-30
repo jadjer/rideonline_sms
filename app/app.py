@@ -17,12 +17,11 @@ import grpc
 from loguru import logger
 from concurrent import futures
 from app.service import Service
-from protos.service import sms_pb2_grpc
+from protos.service.sms_pb2_grpc import add_SmsServicer_to_server
 from app.core.config import get_app_settings
 
 
-class App(sms_pb2_grpc.SmsServicer):
-
+class App(object):
     def __init__(self):
         self.settings = get_app_settings()
 
@@ -30,7 +29,9 @@ class App(sms_pb2_grpc.SmsServicer):
         port = self.settings.port
 
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        sms_pb2_grpc.add_SmsServicer_to_server(Service(self.settings), server)
+
+        add_SmsServicer_to_server(Service(self.settings), server)
+
         server.add_insecure_port(f"[::]:{port}")
         server.start()
 
