@@ -190,9 +190,3 @@ def send_sms_to_phone(device_host: HttpUrl, phone: str, message: str) -> bool:
 
         except httpx.ConnectTimeout as err:
             return False
-
-
-def send_verify_code_to_phone(device_host: HttpUrl, phone: str, verify_code: int) -> bool:
-    verification_message = "{code} is your verification code.".format(code=verify_code)
-
-    return send_sms_to_phone(device_host, phone, verification_message)

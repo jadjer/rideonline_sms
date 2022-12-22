@@ -11,3 +11,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+from fastapi import HTTPException
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse
+
+from app.models.schemas.wrapper import WrapperResponse
+
+
+async def http_error_handler(_: Request, exc: HTTPException) -> JSONResponse:
+    return JSONResponse(
+        WrapperResponse(success=False, message=exc.detail).dict(),
+        status_code=exc.status_code
+    )

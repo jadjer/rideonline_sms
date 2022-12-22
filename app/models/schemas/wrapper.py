@@ -12,9 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from app import App
+from pydantic import BaseModel
 
 
-if __name__ == '__main__':
-    app = App()
-    app.run()
+class WrapperResponse(BaseModel):
+    success: bool = True
+    payload: dict = None
+    message: str = ""
