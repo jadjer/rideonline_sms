@@ -11,3 +11,22 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+from typing import Callable, Type
+
+from fastapi import Depends
+from fastapi.requests import Request
+from neo4j import AsyncSession
+
+from app.database.repositories.base_repository import BaseRepository
+
+
+def _get_db_session(request: Request) -> AsyncSession:
+    return request.app.state.session
+
+
+def get_repository(repo_type: Type[BaseRepository]) -> Callable[[AsyncSession], BaseRepository]:
+    def _get_repo(session=Depends(_get_db_session)) -> BaseRepository:
+        return repo_type(session)
+
+    return _get_repo

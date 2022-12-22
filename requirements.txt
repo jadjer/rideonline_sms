@@ -1,8 +1,8 @@
-pydantic
+fastapi
 loguru
+uvicorn
 xmltodict
 httpx
 phonenumbers
 pytest
-protobuf
-grpcio
+pydantic

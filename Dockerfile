@@ -1,20 +1,20 @@
 FROM python
 
-ENV PORT=50051
-ENV SMS_API_HOST="http://192.168.1.1"
+ARG VERSION
+
+ENV VERSION=${VERSION}
+ENV HILINK="http://192.168.1.1"
 
 WORKDIR /app
 
-RUN python -m venv venv
+RUN pip install --upgrade pip
 
 COPY requirements.txt /app/requirements.txt
 
-RUN /app/venv/bin/pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-COPY main.py /app/main.py
 COPY app /app/app
-COPY protos /app/protos
 
-EXPOSE $PORT
+EXPOSE 8000
 
-CMD ["/app/venv/bin/python", "./main.py"]
+ENTRYPOINT ["uvicorn", "app.app:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000"]

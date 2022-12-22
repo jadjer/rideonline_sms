@@ -37,16 +37,6 @@ class Service(SmsServicer):
                 in_error=True, error_message=strings.PHONE_NUMBER_INVALID_ERROR
             ))
 
-        if not is_hilink(self.settings.sms_api_host):
-            logger.error(strings.VERIFICATION_SERVICE_TEMPORARY_UNAVAILABLE)
-            return SmsSendResponse(status=Status(
-                in_error=True, error_message=strings.VERIFICATION_SERVICE_TEMPORARY_UNAVAILABLE
-            ))
 
-        if not send_sms_to_phone(self.settings.sms_api_host, request.phone, request.message):
-            logger.error(strings.VERIFICATION_SERVICE_SEND_SMS_ERROR)
-            return SmsSendResponse(status=Status(
-                in_error=True, error_message=strings.VERIFICATION_SERVICE_SEND_SMS_ERROR
-            ))
 
         return SmsSendResponse(status=Status(in_error=False, error_message=""))

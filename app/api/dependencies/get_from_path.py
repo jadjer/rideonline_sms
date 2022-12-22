@@ -11,3 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+from fastapi import Path
+
+
+def get_user_id_from_path(user_id: int = Path(..., ge=1)) -> int:
+    return user_id

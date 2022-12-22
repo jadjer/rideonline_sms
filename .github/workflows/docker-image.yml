@@ -28,6 +28,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          build-args: |
+            VERSION=${{ github.REF_NAME }}
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY_NAME }}:${{ github.REF_NAME }}
