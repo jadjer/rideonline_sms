@@ -43,4 +43,4 @@ async def send_sms(
         logger.error(strings.VERIFICATION_SEND_SMS_ERROR)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=strings.VERIFICATION_SEND_SMS_ERROR)
 
-    return WrapperResponse(success=True, message="Send success")
+    return WrapperResponse()
