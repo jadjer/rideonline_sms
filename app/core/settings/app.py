@@ -29,8 +29,8 @@ class AppSettings(BaseAppSettings):
     openapi_prefix: str = ""
     openapi_url: str = "/openapi.json"
     redoc_url: str = "/redoc"
-    title: str = "SmsManager"
-    version: str = "0.0.1"
+    title: str = "Ride Online Sms Manager"
+    version: str = "v0.0.0"
 
     hilink: HttpUrl
 
