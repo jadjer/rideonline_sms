@@ -34,7 +34,7 @@ class AppSettings(BaseAppSettings):
 
     hilink: HttpUrl
 
-    api_prefix: str = ""
+    api_prefix: str = "/api"
 
     allowed_hosts: List[str] = ["*"]
 
