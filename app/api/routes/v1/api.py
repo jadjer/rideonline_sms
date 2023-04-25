@@ -14,8 +14,8 @@
 
 from fastapi import APIRouter
 
-from . import sms
+from app.api.routes.v1 import sms
 
-router = APIRouter()
+router = APIRouter(prefix="/v1")
 
 router.include_router(sms.router, tags=["Sms"])

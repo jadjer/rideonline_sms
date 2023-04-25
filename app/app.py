@@ -17,7 +17,7 @@ from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.errors.http_error import http_error_handler
-from app.api.routes.api import router as api_router
+from app.api.routes.v1.api import router as api_router
 from app.core.config import get_app_settings
 
 
