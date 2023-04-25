@@ -1,19 +1,27 @@
 FROM python
 
 ARG VERSION
+ARG BUILD_DATE
+ARG GITHUB_SHA
 
-ENV VERSION=${VERSION}
+ENV VERSION=$VERSION
+ENV BUILD_DATE=$BUILD_DATE
+ENV GITHUB_SHA=$GITHUB_SHA
+
 ENV HILINK="http://192.168.1.1"
 
-WORKDIR /app
+ENV BASE_PATH="/app"
+ENV APP_PATH="$BASE_PATH/app"
 
 RUN pip install --upgrade pip
 
-COPY requirements.txt /app/requirements.txt
+RUN mkdir -p $BASE_PATH
+WORKDIR $BASE_PATH
 
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
-
-COPY app /app/app
+RUN mkdir -p $APP_PATH
+COPY requirements.txt $BASE_PATH
+RUN pip install --no-cache-dir --upgrade -r $BASE_PATH/requirements.txt
+COPY app $APP_PATH
 
 EXPOSE 8000
 
