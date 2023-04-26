@@ -4,7 +4,7 @@
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#      https://www.apache.org/licenses/LICENSE-2.0
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
 
 import pytest
 
-from app.service import Service
+from fastapi import FastAPI
 
 
 @pytest.fixture
@@ -22,6 +22,12 @@ def settings():
     from app.core.config import get_app_settings
 
     return get_app_settings()
+
+
+@pytest.fixture
+def app() -> FastAPI:
+    from app.app import get_application
+    return get_application()
 
 
 @pytest.fixture

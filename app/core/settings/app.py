@@ -14,10 +14,10 @@
 
 import logging
 import sys
-from typing import Any, Dict, List, Tuple
 
+from typing import Any, Dict, List, Tuple
 from loguru import logger
-from pydantic import SecretStr, HttpUrl
+from pydantic import HttpUrl
 
 from app.core.logging import InterceptHandler
 from app.core.settings.base import BaseAppSettings
@@ -29,7 +29,7 @@ class AppSettings(BaseAppSettings):
     openapi_prefix: str = ""
     openapi_url: str = "/openapi.json"
     redoc_url: str = "/redoc"
-    title: str = "Ride Online Sms Manager"
+    title: str = "Ride Online Sms"
     version: str = "v0.0.0"
 
     hilink: HttpUrl
