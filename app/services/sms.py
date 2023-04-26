@@ -13,11 +13,11 @@
 #  limitations under the License.
 
 import contextlib
-from datetime import datetime
-from typing import List
-
 import httpx
 import xmltodict as xmltodict
+
+from datetime import datetime
+from typing import List
 from httpx import Client
 from pydantic import HttpUrl
 

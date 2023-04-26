@@ -12,8 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from fastapi import Header
+from fastapi import Query
 
 
-def get_language_from_path(language: str = Header(default="en", alias="Accept-Language")) -> str:
+def get_language_from_path(language: str = Query(default="en")) -> str:
     return language
