@@ -15,7 +15,6 @@
 from loguru import logger
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.api.dependencies.get_from_path import get_language_from_path
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
 from app.models.schemas.sms import Sms
@@ -30,7 +29,6 @@ router = APIRouter()
 @router.post("/send", status_code=status.HTTP_200_OK, name="sms:send")
 async def send_sms(
         request: Sms,
-        language: str = Depends(get_language_from_path),
         settings: AppSettings = Depends(get_app_settings),
 ) -> WrapperResponse:
     if not check_phone_is_valid(request.phone):
