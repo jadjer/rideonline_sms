@@ -14,6 +14,7 @@
 
 from loguru import logger
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
@@ -31,7 +32,7 @@ router = APIRouter()
 async def send_sms(
         request: SmsSend,
         settings: AppSettings = Depends(get_app_settings),
-) -> WrapperResponse:
+) -> JSONResponse:
     if not check_phone_is_valid(request.phone):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=strings.PHONE_NUMBER_INVALID_ERROR)
 
@@ -43,4 +44,7 @@ async def send_sms(
         logger.error(strings.VERIFICATION_SEND_SMS_ERROR)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=strings.VERIFICATION_SEND_SMS_ERROR)
 
-    return WrapperResponse()
+    return JSONResponse(
+        content=WrapperResponse(),
+        headers={"Content-Language": "en"},
+    )
