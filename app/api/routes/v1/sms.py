@@ -58,6 +58,8 @@ async def send_sms(
         )
 
     return JSONResponse(
-        content=WrapperResponse(),
+        content=WrapperResponse(
+            success=True,
+        ),
         headers={"Content-Language": "en"},
     )
