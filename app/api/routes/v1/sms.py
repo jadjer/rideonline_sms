@@ -16,9 +16,9 @@ from loguru import logger
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 
+from app.api.dependencies.get_from_path import get_language_from_path
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
-
 from app.models.schemas.sms import SmsSend
 from app.models.schemas.wrapper import WrapperResponse
 from app.services.phone_number_validator import check_phone_is_valid
@@ -31,18 +31,31 @@ router = APIRouter()
 @router.post("/send", status_code=status.HTTP_200_OK, name="sms:send")
 async def send_sms(
         request: SmsSend,
+        language: str = Depends(get_language_from_path),
         settings: AppSettings = Depends(get_app_settings),
 ) -> JSONResponse:
     if not check_phone_is_valid(request.phone):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=strings.PHONE_NUMBER_INVALID_ERROR)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=strings.PHONE_NUMBER_INVALID_ERROR,
+            headers={"Content-Language": language},
+        )
 
     if not is_hilink(settings.hilink):
         logger.error(strings.SERVICE_UNAVAILABLE)
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=strings.SERVICE_UNAVAILABLE)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=strings.SERVICE_UNAVAILABLE,
+            headers={"Content-Language": language},
+        )
 
     if not send_sms_to_phone(settings.hilink, request.phone, request.message):
         logger.error(strings.VERIFICATION_SEND_SMS_ERROR)
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=strings.VERIFICATION_SEND_SMS_ERROR)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=strings.VERIFICATION_SEND_SMS_ERROR,
+            headers={"Content-Language": language},
+        )
 
     return JSONResponse(
         content=WrapperResponse(),
