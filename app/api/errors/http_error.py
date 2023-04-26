@@ -22,6 +22,5 @@ from app.models.schemas.wrapper import WrapperResponse
 async def http_error_handler(_: Request, exc: HTTPException) -> JSONResponse:
     return JSONResponse(
         content=WrapperResponse(success=False, message=exc.detail).dict(),
-        status_code=exc.status_code,
-        headers={"Content-Language": "en"}
+        status_code=exc.status_code
     )
