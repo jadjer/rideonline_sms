@@ -12,9 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from pydantic import BaseModel
+from app.models.common import BaseAppModel
 
 
-class Sms(BaseModel):
+class SmsRequest(BaseAppModel):
     phone: str
     message: str
+
+
+class SmsCountResponse(BaseAppModel):
+    count: int

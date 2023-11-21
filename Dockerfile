@@ -20,7 +20,7 @@ WORKDIR $BASE_PATH
 
 RUN mkdir -p $APP_PATH
 COPY requirements.txt $BASE_PATH
-RUN pip install --no-cache-dir --upgrade -r $BASE_PATH/requirements.txt
+RUN pip install -r $BASE_PATH/requirements.txt
 COPY app $APP_PATH
 
 EXPOSE 8000

@@ -24,7 +24,7 @@ def check_phone_is_valid(phone_number: str) -> bool:
         return False
 
     if not is_possible_number(phone):
-        logger.warning(f"Phone number {phone_number} is inpossible number")
+        logger.warning(f"Phone number {phone_number} is impossible number")
         return False
 
     if not is_valid_number(phone):

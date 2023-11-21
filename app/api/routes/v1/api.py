@@ -18,4 +18,4 @@ from app.api.routes.v1 import sms
 
 router = APIRouter(prefix="/v1")
 
-router.include_router(sms.router, tags=["Sms"])
+router.include_router(sms.router, tags=["sms"])

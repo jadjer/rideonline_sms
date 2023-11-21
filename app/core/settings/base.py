@@ -12,10 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class BaseAppSettings(BaseSettings):
-    class Config:
-        case_sensitive = False
-        validate_assignment = True
+    model_config = SettingsConfigDict(case_sensitive=False, validate_assignment=True)
