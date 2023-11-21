@@ -41,9 +41,6 @@ class AppSettings(BaseAppSettings):
     logging_level: int = logging.INFO
     loggers: Tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")
 
-    class Config:
-        validate_assignment = True
-
     @property
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {

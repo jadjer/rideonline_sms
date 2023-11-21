@@ -1,4 +1,4 @@
-#  Copyright 2022 Pavel Suprunov
+#  Copyright 2023 Pavel Suprunov
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,9 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from datetime import datetime
-from pydantic import field_validator, BaseModel, Field, ConfigDict
+from fastapi.requests import Request
+
+from app.worker.worker import Worker
 
 
-class BaseAppModel(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+def get_worker(request: Request) -> Worker:
+    return request.app.state.worker
+

@@ -12,10 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from pydantic import BaseModel
+from app.models.common import BaseAppModel
 
 
-class WrapperResponse(BaseModel):
+class WrapperResponse(BaseAppModel):
     success: bool = True
-    payload: dict = None
+    payload: dict = {}
     message: str = ""

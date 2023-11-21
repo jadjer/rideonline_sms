@@ -12,9 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from datetime import datetime
-from pydantic import field_validator, BaseModel, Field, ConfigDict
+from app.models.common import BaseAppModel
 
 
-class BaseAppModel(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+class SMS(BaseAppModel):
+    phone: str
+    message: str
